@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agendamento</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Link para o arquivo CSS externo -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+    <!-- Tela de Loading -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Container para Mensagens -->
+    <div id="message-container"></div>
+    
+    <!-- Login -->
+    <div id="login-page" class="auth-card transition-fade visible">
+        <h1 class="auth-title">💼 Sistema de Agendamento</h1>
+        <h2 class="auth-subtitle">Entrar</h2>
+        <input type="text" id="login-email" placeholder="Usuário (E-mail)" class="input-field">
+        <input type="password" id="login-senha" placeholder="Senha" class="input-field">
+        <button id="login-btn" class="btn-primary">Entrar</button>
+        <button id="forgot-password-btn" class="btn-link">Esqueceu a senha?</button>
+        <button id="go-to-cadastro-btn" class="btn-link">Não tem conta? Cadastre-se</button>
+    </div>
+
+
+    <!-- Cadastro -->
+    <div id="cadastro-page" class="auth-card transition-fade hidden">
+        <h1 class="auth-title">💼 Sistema de Agendamento</h1>
+        <h2 class="auth-subtitle">Cadastro</h2>
+        <input type="text" id="register-name" placeholder="Nome Completo" class="input-field">
+        <input type="text" id="register-email" placeholder="E-mail" class="input-field">
+        <input type="password" id="register-password" placeholder="Senha" class="input-field">
+        <input type="password" id="confirm-password" placeholder="Confirmar Senha" class="input-field">
+        <button id="register-btn" class="btn-primary">Cadastrar</button>
+        <button id="back-to-login-btn" class="btn-link">Voltar para o Login</button>
+    </div>
+
+
+
+ <!-- Página do Administrador -->
+    <div id="admin-page" class="hidden">
+        <!-- Header -->
+        <div class="admin-header">
+            <div>
+                <h1 class="admin-title">🚀 Painel Administrativo</h1>
+                <p class="admin-subtitle">Gerencie seu sistema de agendamentos</p>
+            </div>
+            <div class="flex flex-wrap items-center space-x-2 md:space-x-4 mt-3 md:mt-0">
+    <span id="admin-user-email" class="text-gray-700 dark:text-gray-200 font-medium text-sm md:text-base">
+     
+    </span>
+    <button id="admin-logout-btn" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-400">
+      SAIR
+    </button>
+  </div>
+        </div>
+
+      <!-- Navegação Admin -->
+        <div class="flex flex-wrap gap-2 md:gap-4 mb-6">
+            <button id="show-agenda-btn" class="nav-btn">Agenda</button>
+            <button id="show-procedures-btn" class="nav-btn">Bloqueios e Procedimentos</button>
+            <button id="show-history-btn" class="nav-btn">Histórico</button>
+        </div>
+        
+       <!-- Painel de Agenda Admin -->
+        <div id="admin-agenda-panel" class="panel-slide-up">
+        <div class="appointments-panel col-span-2">
+
+        <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+      Todos os Agendamentos
+        </h2>
+
+    <!-- Tabela Desktop -->
+    <div class="overflow-x-auto rounded-2xl shadow-lg hidden md:block">
+      <table id="appointments-table" class="min-w-full bg-white dark:bg-gray-800 rounded-2xl text-sm">
+        <thead>
+          <tr class="bg-gray-100 dark:bg-gray-700 text-left">
+            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">DATA</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">NOME</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">HORAS</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">VALOR</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">TIPO</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+          <!-- Conteúdo gerado dinamicamente -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Versão Mobile -->
+    <div id="appointments-list-mobile" class="md:hidden space-y-4">
+      <!-- Cards móveis gerados pelo JS -->
+      <template id="mobile-appointment-card-template">
+        <div class="bg-white dark:bg-gray-700 rounded-2xl shadow p-4 flex flex-col space-y-2">
+          <div class="flex justify-between text-gray-800 dark:text-gray-100 font-medium">
+            <span class="appointment-date">12/08/2025</span>
+            <span class="appointment-time">14:00</span>
+          </div>
+          <div class="text-gray-700 dark:text-gray-200 font-semibold">Nome do Cliente</div>
+          <div class="flex justify-between text-gray-600 dark:text-gray-300 text-sm">
+            <span class="appointment-type">Serviço</span>
+            <span class="appointment-value">R$ 120,00</span>
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm transition-all duration-200">Editar</button>
+            <button class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-all duration-200">Excluir</button>
+          </div>
+        </div>
+      </template>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- Painel de Procedimentos e Bloqueios Admin -->
+<div id="admin-procedures-panel" class="panel-slide-up hidden">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+
+    <!-- Coluna de Bloqueios -->
+    <div class="block-settings-panel p-4 md:p-6 rounded-2xl shadow-md bg-gray-800 text-gray-200 transition-all duration-300">
+      <h2 class="text-xl md:text-2xl font-bold mb-4">Bloqueios</h2>
+      
+      <div class="block-days-panel p-4 rounded-xl shadow-inner bg-gray-700 mb-6">
+        <h3 class="text-lg font-semibold">Bloquear Dias da Semana:</h3>
+        <div class="flex flex-wrap gap-4 mt-3">
+          <div class="toggle-switch-container flex items-center space-x-2">
+            <label for="block-domingo" class="font-medium">Domingo</label>
+            <label class="toggle-switch-label">
+              <input type="checkbox" id="block-domingo">
+              <span class="toggle-switch-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-switch-container flex items-center space-x-2">
+            <label for="block-sabado" class="font-medium">Sábado</label>
+            <label class="toggle-switch-label">
+              <input type="checkbox" id="block-sabado">
+              <span class="toggle-switch-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-time-panel p-4 rounded-xl shadow-inner bg-gray-700">
+        <h3 class="text-lg font-semibold mb-4">Bloquear Horário Específico</h3>
+        <div class="space-y-4">
+          <label class="block">
+            <span>Data:</span>
+            <input type="date" id="block-date-input" class="w-full p-3 border border-gray-600 rounded-xl bg-gray-800 text-gray-200">
+          </label>
+          <label class="block">
+            <span>Horário de Início:</span>
+            <input type="time" id="block-time-input" class="w-full p-3 border border-gray-600 rounded-xl bg-gray-800 text-gray-200">
+          </label>
+          <label class="block">
+            <span>Duração (minutos):</span>
+            <select id="block-duration-select" class="w-full p-3 border border-gray-600 rounded-xl bg-gray-800 text-gray-200">
+              <option value="30">30 minutos</option>
+              <option value="45">45 minutos</option>
+              <option value="60">60 minutos</option>
+              <option value="90">90 minutos</option>
+            </select>
+          </label>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button id="block-time-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200">Bloquear Horário</button>
+            <button id="block-day-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200">Bloquear Dia Todo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold mb-2">Horários Bloqueados</h3>
+        <div class="overflow-x-auto rounded-xl shadow-md hidden md:block">
+          <table class="min-w-full bg-gray-800 rounded-xl text-sm text-gray-200" id="blocked-times-table">
+            <thead>
+              <tr class="bg-gray-700 text-left">
+                <th class="py-2 px-4 font-semibold">DATA</th>
+                <th class="py-2 px-4 font-semibold">HORA</th>
+                <th class="py-2 px-4 font-semibold">DURAÇÃO</th>
+                <th class="py-2 px-4 font-semibold">AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <!-- Versão mobile da tabela -->
+        <div id="blocked-times-list-mobile" class="md:hidden space-y-4">
+          <!-- Conteúdo gerado pelo JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Coluna de Procedimentos -->
+    <div class="p-4 md:p-6 rounded-2xl shadow-md bg-gray-800 text-gray-200 transition-all duration-300">
+      <h2 class="text-xl md:text-2xl font-bold mb-4">Detalhes de Procedimento</h2>
+      <div class="p-4 rounded-xl shadow-inner bg-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Adicionar Novo Procedimento</h3>
+        <div class="space-y-4">
+          <label class="block">
+            <span>Descrição:</span>
+            <input type="text" id="procedure-description" placeholder="Ex: Corte de Cabelo" class="w-full p-3 border border-gray-600 rounded-xl bg-gray-800 text-gray-200">
+          </label>
+          <label class="block">
+            <span>Duração (minutos):</span>
+            <select id="procedure-duration-select" class="w-full p-3 border border-gray-600 rounded-xl bg-gray-800 text-gray-200">
+              <option value="30">30 minutos</option>
+              <option value="45">45 minutos</option>
+              <option value="60">60 minutos</option>
+              <option value="90">90 minutos</option>
+            </select>
+          </label>
+          <label class="block">
+            <span>Preço (R$):</span>
+            <input type="number" id="procedure-price-input" placeholder="Ex: 50.00" class="w-full p-3 border border-gray-600 rounded-xl bg-gray-800 text-gray-200">
+          </label>
+          <button id="add-procedure-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200">Adicionar Procedimento</button>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold mb-4">Procedimentos Cadastrados</h3>
+        <div class="overflow-x-auto rounded-xl shadow-md hidden md:block">
+          <table class="min-w-full bg-gray-800 rounded-xl text-sm text-gray-200" id="procedures-table">
+            <thead>
+              <tr class="bg-gray-700 text-left">
+                <th class="py-2 px-4 font-semibold">DESCRIÇÃO</th>
+                <th class="py-2 px-4 font-semibold">DURAÇÃO</th>
+                <th class="py-2 px-4 font-semibold">PREÇO</th>
+                <th class="py-2 px-4 font-semibold">AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <!-- Versão mobile da tabela -->
+        <div id="procedures-list-mobile" class="md:hidden space-y-4">
+          <!-- Conteúdo gerado pelo JavaScript -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+        <!-- Painel de Histórico de Agendamentos (novo) -->
+        <div id="admin-history-panel" class="panel-slide-up hidden">
+            <h2 class="text-xl md:text-2xl font-bold mb-4">Histórico de Atendimentos</h2>
+            <div class="flex flex-wrap gap-2 md:gap-4 mb-6">
+                <button id="filter-today-btn" class="nav-btn">Hoje</button>
+                <button id="filter-week-btn" class="nav-btn">Semana</button>
+                <button id="filter-month-btn" class="nav-btn">Mês</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-2xl shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Total de Atendimentos</h3>
+                    <p id="total-atendimentos" class="text-3xl font-bold text-blue-600 mt-2">0</p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-2xl shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Lucro Total</h3>
+                    <p id="lucro-total" class="text-3xl font-bold text-green-500 mt-2">R$ 0,00</p>
+                </div>
+            </div>
+            <div class="overflow-x-auto rounded-xl shadow-md hidden md:block">
+                <table id="history-table" class="min-w-full bg-white dark:bg-gray-700 rounded-xl text-sm">
+                    <thead>
+                        <tr class="bg-gray-200 dark:bg-gray-600 text-left">
+                            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">DATA</th>
+                            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">NOME</th>
+                            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">HORA</th>
+                            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">VALOR</th>
+                            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">TIPO</th>
+                            <th class="py-3 px-4 font-semibold text-gray-600 dark:text-gray-200">AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body"></tbody>
+                </table>
+            </div>
+            <!-- Versão mobile da tabela -->
+            <div id="history-list-mobile" class="md:hidden space-y-4">
+                <!-- Conteúdo gerado pelo JavaScript -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Página do Cliente -->
+     <div id="cliente-page" class="hidden">
+        <!-- Header -->
+        <div class="admin-header">
+            <div>
+                <h1 class="admin-title">🚀 Painel do Cliente</h1>
+                <p class="admin-subtitle">Gerencie seus agendamentos</p>
+            </div>
+            <!-- Agrupando o e-mail e o botão em uma div -->
+            <div class="flex flex-wrap items-center space-x-2 md:space-x-4 mt-3 md:mt-0">
+                <span id="cliente-user-email" class="text-gray-700 font-medium dark:text-gray-200 text-sm md:text-base"></span>
+                <button id="cliente-logout-btn" class="nav-btn sair">
+                        SAIR
+                </button>
+            </div>
+        </div>
+            
+        <!-- Navegação do Cliente -->
+        <div class="flex flex-wrap gap-2 md:gap-4 mb-6">
+            <button id="show-client-form-btn" class="nav-btn active">Novo Agendamento</button>
+            <button id="show-client-appointments-btn" class="nav-btn inactive">Meus Agendamentos</button>
+            <button id="show-client-profile-btn" class="nav-btn inactive">Meu Cadastro</button>
+        </div>
+        
+        <!-- Painel de Formulário de Agendamento -->
+        <div id="client-form-panel" class="panel-slide-up">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-10">
+                <!-- Formulário de Agendamento -->
+                <div class="form-panel space-y-3 md:space-y-5 bg-gray-50 dark:bg-gray-700 p-4 md:p-6 rounded-2xl shadow-inner border border-gray-100 dark:border-gray-600">
+                    <h2 class="text-xl md:text-2xl font-semibold mb-2 md:mb-4 text-gray-800 dark:text-gray-100">Vamos realizar seu agendamento</h2>
+                    <input type="text" id="nome-cliente" placeholder="Nome" class="w-full p-2 md:p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 text-sm md:text-base">
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-200 text-sm md:text-base">Procedimento:</span>
+                        <select id="procedimento" class="w-full p-2 md:p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 text-sm md:text-base">
+                            <option value="">Selecione um procedimento</option>
+                        </select>
+                    </label>
+                    <input type="email" id="email-cliente" placeholder="E-mail" class="w-full p-2 md:p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 text-sm md:text-base">
+                    <input type="text" id="telefone-cliente" placeholder="Telefone/WhatsApp" class="w-full p-2 md:p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 text-sm md:text-base">
+                    <button id="confirm-agendamento-btn" class="nav-btn procedimento">
+                        Confirmar Agendamento
+                    </button>
+                </div>
+        
+                <!-- Calendário e Horários -->
+                <div class="schedule-panel bg-gray-50 dark:bg-gray-700 p-4 md:p-6 rounded-2xl shadow-inner border border-gray-100 dark:border-gray-600">
+                    <h2 class="text-xl md:text-2xl font-semibold mb-2 md:mb-4 text-gray-800 dark:text-gray-100">Escolha o dia e horário disponível</h2>
+                    <div id="calendar-for-client" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md mb-4 md:mb-6 border border-gray-100 dark:border-gray-600"></div>
+                    <div id="available-times-container" class="flex flex-wrap gap-2 md:gap-3 justify-center"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Painel de Agendamentos do Cliente (oculto por padrão) -->
+        <div id="client-appointments-panel" class="panel-slide-up hidden">
+            <div class="appointments-panel bg-gray-50 dark:bg-gray-700 p-4 md:p-6 rounded-2xl shadow-inner border border-gray-100 dark:border-gray-600">
+                <h2 class="text-xl md:text-2xl font-semibold mb-2 md:mb-4 text-gray-800 dark:text-gray-100">Seus Agendamentos</h2>
+                <div class="overflow-x-auto rounded-xl shadow-md hidden md:block">
+                    <table class="min-w-full bg-white dark:bg-gray-800 rounded-xl text-xs md:text-sm">
+                        <thead>
+                            <tr class="bg-gray-200 dark:bg-gray-600 text-left">
+                                <th class="py-2 px-2 md:py-3 md:px-4 font-semibold text-gray-600 dark:text-gray-200">DATA</th>
+                                <th class="py-2 px-2 md:py-3 md:px-4 font-semibold text-gray-600 dark:text-gray-200">HORA</th>
+                                <th class="py-2 px-2 md:py-3 md:px-4 font-semibold text-gray-600 dark:text-gray-200">PROCEDIMENTO</th>
+                                <th class="py-2 px-2 md:py-3 md:px-4 font-semibold text-gray-600 dark:text-gray-200">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="client-appointments-tbody">
+                            <!-- Os agendamentos do cliente serão inseridos aqui pelo JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Versão mobile da tabela -->
+                <div id="client-appointments-list-mobile" class="md:hidden space-y-4">
+                    <!-- Conteúdo gerado pelo JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel de Cadastro do Cliente (oculto por padrão) -->
+        <div id="client-profile-panel" class="panel-slide-up hidden">
+            <div class="profile-panel space-y-5 bg-gray-50 dark:bg-gray-700 p-4 md:p-6 rounded-2xl shadow-inner border border-gray-100 dark:border-gray-600">
+                <h2 class="text-xl md:text-2xl font-semibold mb-2 md:mb-4 text-gray-800 dark:text-gray-100">Meu Cadastro</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Aqui você pode visualizar e atualizar seus dados.</p>
+                <label class="block">
+                    <span class="text-gray-700 dark:text-gray-200 text-sm md:text-base">Nome:</span>
+                    <input type="text" id="profile-name" class="w-full p-2 md:p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 text-sm md:text-base">
+                </label>
+                <label class="block">
+                    <span class="text-gray-700 dark:text-gray-200 text-sm md:text-base">E-mail:</span>
+                    <input type="email" id="profile-email" class="w-full p-2 md:p-3 border border-gray-300 rounded-xl dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 text-sm md:text-base" disabled>
+                </label>
+                <label class="block">
+                    <span class="text-gray-700 dark:text-gray-200 text-sm md:text-base">Telefone/WhatsApp:</span>
+                    <input type="text" id="profile-phone" class="w-full p-2 md:p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 text-sm md:text-base">
+                </label>
+                <button id="save-profile-btn" class="nav-btn procedimento">
+                    Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+
+         <!-- RODAPÉ GLOBAL -->
+    <div id="page-footer" class="text-center text-sm text-gray-400 py-6 hidden">
+        <p>Precisa de ajuda? <a href="https://wa.me/5511999999999" target="_blank" class="font-semibold text-blue-400 hover:text-blue-300">Fale conosco no WhatsApp</a></p>
+        <p class="mt-2">Desenvolvido por<a href="https://github.com/alysonsb" target="_blank" class="font-semibold text-blue-400 hover:text-blue-300"> AlysonSB </a><a>&copy;2025</a></p>
+    </div>
+        
+
+    <!-- Link para o arquivo JavaScript externo -->
+    <script type="module" src="script.js"></script>
+    <script type="module" src="config.js"></script>
+</body>
+</html>
