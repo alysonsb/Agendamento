@@ -1,6 +1,6 @@
 # 📅 Sistema de Agendamento
 
-![Imagem da Tela de Login](https://i.imgur.com/your-login-image-url.png)
+![Imagem do WebSite](https://imgur.com/a/Ul0JLOM)
 
 Um sistema de agendamento completo e responsivo, desenvolvido com HTML, Tailwind CSS e JavaScript, utilizando o Firebase como backend para autenticação e banco de dados em tempo real. A aplicação possui dois painéis distintos: um para clientes e outro para o administrador.
 
